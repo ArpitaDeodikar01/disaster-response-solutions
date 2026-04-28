@@ -4,10 +4,24 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#3B82F6',
-        urgent: '#EF4444',
-        moderate: '#F59E0B',
-        low: '#10B981',
+        brand: {
+          50:  '#fff1f1',
+          100: '#ffe0e0',
+          200: '#ffc5c5',
+          400: '#f87171',
+          500: '#ef4444',
+          600: '#dc2626',
+          700: '#b91c1c',
+          800: '#991b1b',
+          900: '#7f1d1d',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      borderRadius: {
+        xl: '0.875rem',
+        '2xl': '1.25rem',
       },
     },
   },

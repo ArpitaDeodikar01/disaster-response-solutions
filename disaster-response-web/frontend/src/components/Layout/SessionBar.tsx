@@ -1,70 +1,52 @@
-/**
- * SessionBar — persistent top bar showing all open sessions.
- * Lets users add new sessions, switch between them, and close them.
- * Each session is a fully independent Firebase Auth context.
- */
 import { useState } from 'react';
 import { useSession } from '../../contexts/SessionContext';
 import SessionLoginModal from './SessionLoginModal';
 
 export default function SessionBar() {
-  const { sessions, activeSessionId, createSession, switchSession, removeSession } =
-    useSession();
-  const [showLogin, setShowLogin] = useState<string | null>(null); // sessionId to login
+  const { sessions, activeSessionId, createSession, switchSession, removeSession } = useSession();
+  const [showLogin, setShowLogin] = useState<string | null>(null);
 
   function handleAdd() {
     const id = createSession();
-    setShowLogin(id); // immediately prompt login for new session
+    setShowLogin(id);
   }
 
   return (
     <>
-      <div className="bg-gray-900 text-white text-xs flex items-center gap-1 px-3 py-1.5 overflow-x-auto">
-        <span className="text-gray-400 mr-2 shrink-0">Sessions:</span>
+      <div className="bg-gray-900 border-b border-white/5 text-xs flex items-center gap-1.5 px-4 py-1.5 overflow-x-auto">
+        <span className="text-gray-500 mr-1 shrink-0 font-medium">Sessions</span>
+        <span className="text-gray-700 mr-1">·</span>
 
         {sessions.map((session) => {
           const isActive = session.id === activeSessionId;
           return (
             <div
               key={session.id}
-              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full cursor-pointer transition shrink-0 ${
-                isActive
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-              }`}
               onClick={() => switchSession(session.id)}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full cursor-pointer transition-all shrink-0 ${
+                isActive
+                  ? 'bg-brand-600 text-white shadow-sm'
+                  : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-gray-200'
+              }`}
             >
-              {/* Status dot */}
-              <span
-                className={`w-1.5 h-1.5 rounded-full ${
-                  session.user ? 'bg-green-400' : 'bg-gray-500'
-                }`}
-              />
-              <span className="max-w-[140px] truncate">
+              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${session.user ? 'bg-emerald-400' : 'bg-gray-600'}`} />
+              <span className="max-w-[130px] truncate">
                 {session.user ? session.label : `${session.label} (not logged in)`}
               </span>
 
-              {/* Login button if not logged in */}
               {!session.user && (
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowLogin(session.id);
-                  }}
-                  className="ml-1 text-blue-300 hover:text-blue-100 font-medium"
+                  onClick={(e) => { e.stopPropagation(); setShowLogin(session.id); }}
+                  className="ml-0.5 text-blue-400 hover:text-blue-200 font-semibold"
                 >
                   Login
                 </button>
               )}
 
-              {/* Close button — only show if more than 1 session */}
               {sessions.length > 1 && (
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeSession(session.id);
-                  }}
-                  className="ml-1 text-gray-400 hover:text-red-400 font-bold leading-none"
+                  onClick={(e) => { e.stopPropagation(); removeSession(session.id); }}
+                  className="ml-0.5 text-gray-500 hover:text-red-400 font-bold leading-none"
                 >
                   ×
                 </button>
@@ -73,21 +55,16 @@ export default function SessionBar() {
           );
         })}
 
-        {/* Add session button */}
         <button
           onClick={handleAdd}
-          className="ml-2 px-2.5 py-1 rounded-full bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white transition shrink-0"
+          className="ml-1 px-2.5 py-1 rounded-full bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition shrink-0"
         >
           + Add Session
         </button>
       </div>
 
-      {/* Login modal for a specific session */}
       {showLogin && (
-        <SessionLoginModal
-          sessionId={showLogin}
-          onClose={() => setShowLogin(null)}
-        />
+        <SessionLoginModal sessionId={showLogin} onClose={() => setShowLogin(null)} />
       )}
     </>
   );

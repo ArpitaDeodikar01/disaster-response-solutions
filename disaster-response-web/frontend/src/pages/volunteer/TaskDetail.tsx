@@ -46,51 +46,66 @@ export default function TaskDetail() {
   const isConfirmed = user ? task.confirmedVolunteers.includes(user.uid) : false;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="page">
       <Navbar />
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <button onClick={() => navigate(-1)} className="text-sm text-blue-600 hover:underline mb-4 block">← Back</button>
+        <button onClick={() => navigate(-1)}
+          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 mb-6 transition">
+          ← Back to tasks
+        </button>
 
-        <div className="bg-white rounded-xl shadow p-6">
-          <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
-            <h1 className="text-xl font-bold text-gray-900">{task.title}</h1>
+        <div className="card p-6">
+          {/* Header */}
+          <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">{task.title}</h1>
+              <p className="text-sm text-gray-500 mt-1">📍 {task.area}</p>
+            </div>
             <TaskStatusChip status={task.status} />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-            <div><p className="text-gray-400">Location</p><p className="font-medium">📍 {task.area}</p></div>
-            <div><p className="text-gray-400">Schedule</p><p className="font-medium capitalize">📅 {task.scheduledDay}, {task.scheduledDate}</p></div>
-            <div><p className="text-gray-400">Volunteers</p><p className="font-medium">👥 {task.confirmedVolunteers.length}/{task.volunteersNeeded} confirmed</p></div>
+          {/* Meta grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+            {[
+              { label: 'Location', value: task.area },
+              { label: 'Scheduled', value: `${task.scheduledDay}, ${task.scheduledDate}` },
+              { label: 'Volunteers', value: `${task.confirmedVolunteers.length}/${task.volunteersNeeded} confirmed` },
+            ].map(({ label, value }) => (
+              <div key={label} className="bg-gray-50 rounded-xl p-3">
+                <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">{label}</p>
+                <p className="text-sm font-semibold text-gray-800 mt-0.5 capitalize">{value}</p>
+              </div>
+            ))}
           </div>
 
-          <p className="text-gray-700 mb-4">{task.description}</p>
+          <p className="text-gray-700 text-sm leading-relaxed mb-6">{task.description}</p>
 
           {task.requiredSkills.length > 0 && (
             <div className="mb-6">
-              <p className="text-sm font-medium text-gray-700 mb-2">Required Skills</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">Required Skills</p>
               <div className="flex flex-wrap gap-2">
                 {task.requiredSkills.map((s) => (
-                  <span key={s} className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full">{s}</span>
+                  <span key={s} className="px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-full font-medium">{s}</span>
                 ))}
               </div>
             </div>
           )}
 
+          {/* Actions */}
           {isConfirmed ? (
             <button
               onClick={() => navigate(`/volunteer/task/${task.taskId}/progress`)}
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg transition"
+              className="btn-success w-full py-3"
             >
               Update Progress →
             </button>
           ) : task.status === 'open' || task.status === 'assigned' ? (
             <div className="flex gap-3">
-              <button onClick={handleAccept} disabled={acting}
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50">
-                ✓ Accept Task
+              <button onClick={handleAccept} disabled={acting} className="btn-success flex-1 py-3">
+                {acting ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" /> : '✓ Accept Task'}
               </button>
               <button onClick={handleDecline} disabled={acting}
-                className="flex-1 border border-red-400 text-red-600 hover:bg-red-50 font-semibold py-2.5 rounded-lg transition disabled:opacity-50">
+                className="flex-1 py-3 border border-red-300 text-red-600 hover:bg-red-50 font-semibold rounded-lg transition disabled:opacity-50">
                 ✗ Decline
               </button>
             </div>

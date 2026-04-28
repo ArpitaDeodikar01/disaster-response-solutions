@@ -17,6 +17,7 @@ import CoordinatorDashboard from './pages/coordinator/CoordinatorDashboard';
 import NeedDetail from './pages/coordinator/NeedDetail';
 import CreateTask from './pages/coordinator/CreateTask';
 import MatchVolunteers from './pages/coordinator/MatchVolunteers';
+import GeminiChat from './components/Common/GeminiChat';
 
 // Routes rendered inside the active session's AuthProvider
 function AppRoutes() {
@@ -59,6 +60,7 @@ function ActiveSessionView() {
     // Each session gets its own AuthProvider bound to its Firebase app instance
     <AuthProvider firebaseApp={activeSession.app}>
       <AppRoutes />
+      <GeminiChat />
     </AuthProvider>
   );
 }

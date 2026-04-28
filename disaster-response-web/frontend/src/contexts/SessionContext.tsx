@@ -38,7 +38,7 @@ const FIREBASE_CONFIG = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-const SESSIONS_KEY = 'dr_sessions';
+// sessionStorage ensures each browser tab has its own independent session
 const ACTIVE_KEY = 'dr_active_session';
 
 export interface Session {
@@ -78,7 +78,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   });
 
   const [activeSessionId, setActiveSessionId] = useState<string>(() => {
-    return localStorage.getItem(ACTIVE_KEY) ?? 'session_1';
+    return sessionStorage.getItem(ACTIVE_KEY) ?? 'session_1';
   });
 
   // Subscribe to auth state for each session
@@ -127,13 +127,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     };
     setSessions((prev) => [...prev, newSession]);
     setActiveSessionId(id);
-    localStorage.setItem(ACTIVE_KEY, id);
+    sessionStorage.setItem(ACTIVE_KEY, id);
     return id;
   }, [sessions.length]);
 
   const switchSession = useCallback((id: string) => {
     setActiveSessionId(id);
-    localStorage.setItem(ACTIVE_KEY, id);
+    sessionStorage.setItem(ACTIVE_KEY, id);
   }, []);
 
   const removeSession = useCallback(
@@ -148,7 +148,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         const remaining = sessions.filter((s) => s.id !== id);
         const next = remaining[0]?.id ?? 'session_1';
         setActiveSessionId(next);
-        localStorage.setItem(ACTIVE_KEY, next);
+        sessionStorage.setItem(ACTIVE_KEY, next);
       }
     },
     [sessions, activeSessionId]
